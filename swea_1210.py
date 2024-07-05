@@ -14,30 +14,30 @@ for test_case in range(1, 11):
         if grid[99][c] == 2:
             end = c
 
-    def explore(start, r, c):
+    def explore(start, r, c, m):
         if r == 99:
             if c == end:
                 return start
             return -1
         
-        left, right, horizontal = c - 1, c + 1, False
+        left, right = c - 1, c + 1
         res = -1
+        turn = False
 
-        if left in range(100) and grid[r][left] == 1:
-            res = max(res, explore(start, r, left))
-            horizontal = True
-        
-        if right in range(100) and grid[r][right] == 1:
-            res = max(res, explore(start, r, right))
-            horizontal = True
+        if m != 'R' and left in range(100) and grid[r][left] > 0:
+            res = max(res, explore(start, r, left, 'L'))
+            turn = m == 'D'
+    
+        if m != 'L' and right in range(100) and grid[r][right] > 0:
+            res = max(res, explore(start, r, right, 'R'))
+            turn = m == 'D'
 
-        if not horizontal:
-            res = max(res, explore(start, r + 1, c))
-
+        if not turn and r + 1 in range(100) and grid[r + 1][c] > 0:
+            res = max(res, explore(start, r + 1, c, 'D'))
         return res
 
     for start in starts:
-        res = explore(start, 0, start)
+        res = explore(start, 0, start, 'D')
 
         if res != -1:
             print(f'#{T} {res}')
