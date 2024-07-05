@@ -1,9 +1,5 @@
 N = int(input())
 S = [list(map(int, input().split())) for _ in range(N)]
-
-def get_score(i, j):
-    return S[i][j] + S[j][i]
-
 T = N // 2
 team = [0] * N
 res = float('inf')
@@ -17,9 +13,9 @@ def dfs(idx, depth):
         for i in range(N):
             for j in range(N):
                 if team[i] and team[j]:
-                    score1 += get_score(i, j)
+                    score1 += S[i][j]
                 elif not team[i] and not team[j]:
-                    score2 += get_score(i, j)
+                    score2 += S[i][j]
         res = min(res, abs(score1 - score2))
         return
 
