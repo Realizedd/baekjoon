@@ -3,32 +3,34 @@ input = sys.stdin.readline
 sys.setrecursionlimit(10**5)
 
 N = int(input())
-graph = {i: [None, None] for i in range(1, N + 1)}
+graph = {i: [] for i in range(1, N + 1)}
 
 for _ in range(N - 1):
     u, v, w = map(int, input().split())
-    
-    if not graph[u][0]:
-        graph[u][0] = (v, w)
-    else:
-        graph[u][1] = (v, w)
+    graph[u].append((v, w))
+    graph[v].append((u, w))
 
-def longest_path_sum(node):
-    if graph[node] == [None, None]:
-        return 0, 0
-    
-    w1, w2 = 0, 0
-    ls1, ls2, c1, c2 = 0, 0, 0, 0
+farthest = -1
+farthest_dist = float('-inf')
+visited = set()
+def dfs(node, dist):
+    global farthest, farthest_dist
+    visited.add(node)
 
-    if graph[node][0]:
-        w1 = graph[node][0][1]
-        ls1, c1 = longest_path_sum(graph[node][0][0])
+    if dist > farthest_dist:
+        farthest_dist = dist
+        farthest = node
 
-    if graph[node][1]:
-        w2 = graph[node][1][1]
-        ls2, c2 = longest_path_sum(graph[node][1][0])
+    for c, w in graph[node]:
+        if c in visited:
+            continue
 
-    # print(node, w1, w2, ls1, ls2, c1, c2)
-    return max(w1 + ls1, w2 + ls2), max(c1, c2, ls1 + w1 + w2 + ls2)
+        dfs(c, dist + w)
 
-print(max(longest_path_sum(1)))
+dfs(1, 0)
+temp = farthest
+farthest = -1
+farthest_dist = float('-inf')
+visited = set()
+dfs(temp, 0)
+print(farthest_dist)
